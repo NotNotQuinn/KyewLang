@@ -1,0 +1,21 @@
+{
+  "name": "math-lang",
+  "version": "0.0.1",
+  "description": "A simple math \"language\".",
+  "main": "build/interactive.js",
+  "dependencies": {
+    "prompt-sync": "^4.2.0",
+    "prompt-sync-history": "^1.0.1",
+    "typescript": "^4.1.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Quinn T",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^14.14.31",
+    "@types/prompt-sync": "^4.1.0",
+    "@types/prompt-sync-history": "^1.0.1"
+  }
+}
