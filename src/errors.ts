@@ -1,3 +1,4 @@
+import { textChangeRangeIsUnchanged } from "typescript";
 import * as Trace from "./stacktrace"
 
 export class BaseError {
@@ -7,7 +8,7 @@ export class BaseError {
         return typeof this._errorMessage == 'string';
     }
 
-    setError(message:string) {
+    setErrorMessage(message:string) {
         if(this.isError()) {
             throw Error(`Cannot re-assign error message ('${this._errorMessage}' to '${message}')`)
         }
@@ -22,17 +23,31 @@ export class BaseError {
 
 export class TraceableError extends BaseError {
 
-    /******************* 
-     under construction
-    ********************/
-    private _codeSection?: Trace.SourceLine;
+    private _codeSnippet?: Trace.SourceLine;
     constructor() {
         super()
     }
-    setError(message:string) {
-        
+    setError(message:string, codeSnippet:Trace.SourceLine) {
+        this.setErrorMessage(message);
+        this.setCodeSnippet(codeSnippet);
     }
-    getCodeSection() {
-        return this._codeSection
+    setCodeSnippet(codeSnippet:Trace.SourceLine) {
+        if(this._codeSnippet != undefined) {
+            throw Error(`Cannot re-assign code snippet.`)
+        }
+        this._codeSnippet = codeSnippet;
+    }
+    getCodeSnippet() {
+        return this._codeSnippet
+    }
+}
+
+/*************************
+ ERRORS TO RAISE
+**************************/
+
+export class NodeViewError extends Error {
+    constructor(message:string) {
+        super(message)
     }
 }

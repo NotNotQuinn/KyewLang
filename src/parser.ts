@@ -58,7 +58,7 @@ export class Parser {
         return result;
     }
 
-    private factor() : Nodes.ValueNode<number> {
+    private factor() : Nodes.BaseNode {
         var token: Tokens.BaseToken | undefined = this.current_token
 
         if(token instanceof Tokens.IntToken ) {
@@ -68,6 +68,15 @@ export class Parser {
         if(token instanceof Tokens.FloatToken ) {
             this.advance()
             return new Nodes.FloatNode(token.value/* token value will always be `number` on int and float */)
+        }
+        if(token instanceof Tokens.LeftPerenthesisToken) {
+            this.advance()
+            var node = this.expression()
+            if (token !instanceof Tokens.RightPerenthesisToken) {
+                throw Error("Syntax error. Expected ')'")
+            }
+            this.advance()
+            return node;
         }
         throw new Error("Syntax error")
     }

@@ -1,14 +1,20 @@
-import PromptSync from "prompt-sync";
-import { runInNewContext } from "vm";
+import { TraceableError, NodeViewError } from "./errors";
+
 
 
 /***********************
  BUILDING BLOCK NODES 
 ************************/
-export class BaseNode {
-
+export class BaseNode extends TraceableError {
+    constructor() {
+        super()
+    }
     display() {
         
+    }
+    visit():any {
+        throw new NodeViewError("Cannot visit base nodes or visit not implemented.");
+
     }
 }
 
@@ -33,7 +39,7 @@ export class BinaryOperatorNode extends BaseNode {
     }
 
     getOperatorString() {
-        return '~~'
+        return '(operator)'
     }
 
 }
@@ -46,6 +52,10 @@ export class ValueNode<T> extends BaseNode {
     }
     display() {
         return `(${this.value})`
+    }
+    visit() {
+        // TODO create custom classes for in-lang numbers and stuff
+        return this.value;
     }
 }
 
@@ -74,6 +84,9 @@ export class AddNode extends BinaryOperatorNode {
     getOperatorString() {
         return '+'
     }
+    visit() {
+        return (this.child_1.visit() + this.child_2.visit());
+    }
 }
 
 export class SubtractNode extends BinaryOperatorNode {
@@ -82,6 +95,9 @@ export class SubtractNode extends BinaryOperatorNode {
     }
     getOperatorString() {
         return '-'
+    }
+    visit() {
+        return (this.child_1.visit() - this.child_2.visit());
     }
 }
 
@@ -92,6 +108,9 @@ export class MultiplyNode extends BinaryOperatorNode {
     getOperatorString() {
         return '*'
     }
+    visit() {
+        return (this.child_1.visit() * this.child_2.visit());
+    }
 }
 
 export class DivideNode extends BinaryOperatorNode {
@@ -100,5 +119,8 @@ export class DivideNode extends BinaryOperatorNode {
     }
     getOperatorString() {
         return '/'
+    }
+    visit() {
+        return (this.child_1.visit() / this.child_2.visit());
     }
 }

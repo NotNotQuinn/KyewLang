@@ -20,6 +20,5 @@ export function execute( code : string , options : run_opts = defalt_run_opts): 
     }
     const parser = new Parser(tokens)
     var result : ParseResult = parser.parse()
-    console.log(result.entryNode?.display())
-    return result;
+    return result.entryNode?.visit();
 }

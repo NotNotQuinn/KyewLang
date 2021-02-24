@@ -3,12 +3,11 @@ import * as Trace from "./stacktrace";
 
 const DIGITS: RegExp = /^(\d|\.)+$/;
 const WHITESPACE: RegExp = /^(\n|\t| )+$/gi;
-
 function convert_to_float(a:string): number { 
           
     // Type conversion 
     // of string to float 
-    var floatValue = +(a); 
+    var floatValue : number = +(a); 
       
     // Return float value 
     return floatValue;  
@@ -31,6 +30,11 @@ export class Lexer {
     }
 
     *make_tokens(): IterableIterator<Tokens.BaseToken> {
+        // TODO look up lexer on wikipedia you idoit
+        // a a real lexer goes forward until there is a 
+        // space or something else you choose, then it 
+        // will take all those characters and try to make 
+        // a token, otherwise there will be an error.
         while (this.currentChar != undefined) {
             if( WHITESPACE.test(this.currentChar)) {
                 // no token for whitespace
@@ -63,11 +67,10 @@ export class Lexer {
     }
 
     generate_number() {
-        let number_str : string | undefined= this.currentChar;
+        let number_str : string | undefined="";
         if (number_str === undefined) {
             throw new Error("Syntax error, tried to generate token when current character is undefined.")
         }
-        this.advance()
         let point_count = 0;
         while (this.currentChar != undefined && (DIGITS.test(this.currentChar) || this.currentChar == '.')) {
             if(this.currentChar == '.') {

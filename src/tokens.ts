@@ -1,7 +1,12 @@
+import { BaseError, TraceableError } from "./errors";
+
 /***********************
  BUILDING BLOCK TOKENS 
 ************************/
-export class BaseToken {
+export class BaseToken extends TraceableError {
+    constructor() {
+        super()
+    }
 }
 
 export class ValueToken<T> extends BaseToken {
