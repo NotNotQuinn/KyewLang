@@ -1,20 +1,38 @@
-import { stringify } from "querystring";
-import { FileWatcherEventKind } from "typescript";
+import * as Trace from "./stacktrace"
 
 export class BaseError {
-    errorMessage?: string;
+    private _errorMessage?: string;
 
     isError(): boolean {
-        return typeof this.errorMessage == 'string';
+        return typeof this._errorMessage == 'string';
     }
 
     setError(message:string) {
         if(this.isError()) {
-            throw Error(`Cannot re-assign error message '${this.errorMessage}' to '${message}'`)
+            throw Error(`Cannot re-assign error message ('${this._errorMessage}' to '${message}')`)
         }
+        this._errorMessage = message
+    }
+    getErrorMessage() {
+        return this._errorMessage;
+    }
+    constructor() {
     }
 }
 
-class TraceableError extends BaseError {
+export class TraceableError extends BaseError {
 
+    /******************* 
+     under construction
+    ********************/
+    private _codeSection?: Trace.SourceLine;
+    constructor() {
+        super()
+    }
+    setError(message:string) {
+        
+    }
+    getCodeSection() {
+        return this._codeSection
+    }
 }

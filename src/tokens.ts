@@ -1,3 +1,6 @@
+/***********************
+ BUILDING BLOCK TOKENS 
+************************/
 export class BaseToken {
 }
 
@@ -9,6 +12,12 @@ export class ValueToken<T> extends BaseToken {
     }
 }
 
+export class BinaryOperatorToken extends BaseToken {
+}
+
+/***********************
+ VALUE TOKENS 
+************************/
 export class IntToken extends ValueToken<number> {
     constructor(int_value : number) {
         if(int_value % 1 != 0) {
@@ -24,9 +33,9 @@ export class FloatToken extends ValueToken<number> {
     }
 }
 
-export class BinaryOperatorToken extends BaseToken {
-}
-
+/***********************
+ BINARY OPERATION TOKENS 
+************************/
 export class PlusToken extends BinaryOperatorToken {
 }
 
@@ -39,6 +48,9 @@ export class MultiplyToken extends BinaryOperatorToken {
 export class DivideToken extends BinaryOperatorToken {
 }
 
+/***********************
+ OTHER TOKENS 
+************************/
 export class LeftPerenthesisToken extends BaseToken {
 }
 

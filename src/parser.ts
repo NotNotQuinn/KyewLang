@@ -21,7 +21,7 @@ export class Parser {
 
     public parse(): ParseResult {
         if(this.current_token == undefined) {
-            return new ParseResult(true, new Nodes.BaseNode(), "No tokens to parse.");
+            return new ParseResult(true, new Nodes.BaseNode());
         }
         var result = this.expression();
         

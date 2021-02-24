@@ -1,4 +1,5 @@
 import * as Tokens from "./tokens";
+import * as Trace from "./stacktrace";
 
 const DIGITS: RegExp = /^(\d|\.)+$/;
 const WHITESPACE: RegExp = /^(\n|\t| )+$/gi;
@@ -14,20 +15,19 @@ function convert_to_float(a:string): number {
 }  
 
 export class Lexer {
-    rawText: string;
+    source: Trace.SourceText;
     pos: number;
-    currentChar: string;
+    currentChar?: string;
 
-    constructor(rawText: string) {
-        this.rawText = rawText;
+    constructor(source: Trace.SourceText) {
+        this.source = source;
         this.pos = -1;
-        this.currentChar = "";
         this.advance()
     }
 
     advance() {
         this.pos++;
-        this.currentChar = this.rawText[this.pos];
+        this.currentChar = this.source.rawText[this.pos];
     }
 
     *make_tokens(): IterableIterator<Tokens.BaseToken> {
@@ -63,7 +63,10 @@ export class Lexer {
     }
 
     generate_number() {
-        let number_str = this.currentChar;
+        let number_str : string | undefined= this.currentChar;
+        if (number_str === undefined) {
+            throw new Error("Syntax error, tried to generate token when current character is undefined.")
+        }
         this.advance()
         let point_count = 0;
         while (this.currentChar != undefined && (DIGITS.test(this.currentChar) || this.currentChar == '.')) {
@@ -83,7 +86,6 @@ export class Lexer {
         if(number_str.startsWith('.')) number_str = "0" + number_str;
         if(number_str.endsWith('.')) {
             // TODO change tokens to hold metadata, stack pointers, and error data
-            // return new Token(TokenType.ERROR, "Syntax error: Cannot end number with '.'");
             throw new Error("Syntax error: Cannot end number with '.'")
         }
 
