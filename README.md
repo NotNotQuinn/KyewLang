@@ -1,7 +1,7 @@
 # KyewLang
 
 A simple language you can perform calculations in.
-Currently the execution step isnt implemented.
+Currently the execution step is in a scuffed form, but it does calculate.
 
 Language name subject to change.
 
