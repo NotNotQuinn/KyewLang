@@ -1,7 +1,7 @@
 import { Parser } from "./parser";
 import { Lexer } from "./lexer";
-import { Token, TokenType } from "./tokens";
-import ParseResult from "./ParseResult"
+import * as Tokens from "./tokens";
+import ParseResult from "./parse_result";
 
 export type run_opts = {
     show_tokenized_code: boolean;
@@ -19,7 +19,7 @@ export function execute( code : string , options : run_opts = defalt_run_opts): 
         console.log(tokens)
     }
     const parser = new Parser(tokens)
-    var result :ParseResult = parser.parse()
+    var result : ParseResult = parser.parse()
     console.log(result.entryNode?.display())
     return result;
 }

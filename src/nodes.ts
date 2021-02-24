@@ -8,30 +8,30 @@ export class BaseNode {
     }
 }
 
-export class NumberNode extends BaseNode {
-    value: number;
-    constructor(value:number) {
+export class ValueNode<T> extends BaseNode {
+    value: T;
+    constructor(value:T) {
         super()
         this.value = value
     }
     display() {
-        return `(${this.value.toString()})`
+        return `(${this.value})`
     }
 }
 
-export class IntNode extends NumberNode {
+export class IntNode extends ValueNode<number> {
     constructor(value:number) {
         super(value)
     }
 }
 
-export class FloatNode extends NumberNode {
+export class FloatNode extends ValueNode<number> {
     constructor(value:number) {
         super(value)
     }
 }
 
-export class BiOpNode extends BaseNode {
+export class BinaryOperatorNode extends BaseNode {
     child_1: BaseNode;
     child_2: BaseNode;
     constructor(child_1: BaseNode, child_2: BaseNode) {
@@ -49,7 +49,7 @@ export class BiOpNode extends BaseNode {
 
 }
 
-export class AddNode extends BiOpNode {
+export class AddNode extends BinaryOperatorNode {
     constructor(child_1: BaseNode, child_2: BaseNode) {
         super(child_1, child_2)
     }
@@ -58,7 +58,7 @@ export class AddNode extends BiOpNode {
     }
 }
 
-export class SubtractNode extends BiOpNode {
+export class SubtractNode extends BinaryOperatorNode {
     constructor(child_1: BaseNode, child_2: BaseNode) {
         super(child_1, child_2)
     }
@@ -67,7 +67,7 @@ export class SubtractNode extends BiOpNode {
     }
 }
 
-export class MultiplyNode extends BiOpNode {
+export class MultiplyNode extends BinaryOperatorNode {
     constructor(child_1: BaseNode, child_2: BaseNode) {
         super(child_1, child_2)
     }
@@ -76,7 +76,7 @@ export class MultiplyNode extends BiOpNode {
     }
 }
 
-export class DivideNode extends BiOpNode {
+export class DivideNode extends BinaryOperatorNode {
     constructor(child_1: BaseNode, child_2: BaseNode) {
         super(child_1, child_2)
     }

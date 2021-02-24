@@ -1,8 +1,9 @@
-import { Token, TokenType } from "./tokens";
+import * as Tokens from "./tokens";
+
 const DIGITS: RegExp = /^(\d|\.)+$/;
 const WHITESPACE: RegExp = /^(\n|\t| )+$/gi;
 
-function convert_to_float(a:string) { 
+function convert_to_float(a:string): number { 
           
     // Type conversion 
     // of string to float 
@@ -29,7 +30,7 @@ export class Lexer {
         this.currentChar = this.rawText[this.pos];
     }
 
-    *make_tokens(): IterableIterator<Token> {
+    *make_tokens(): IterableIterator<Tokens.BaseToken> {
         while (this.currentChar != undefined) {
             if( WHITESPACE.test(this.currentChar)) {
                 // no token for whitespace
@@ -37,22 +38,22 @@ export class Lexer {
             } else if( DIGITS.test(this.currentChar)) {
                 yield this.generate_number()
             } else if( this.currentChar == '-' ) {
-                yield new Token(TokenType.MINUS); 
+                yield new Tokens.MinusToken(); 
                 this.advance();
             } else if( this.currentChar == '+' ) {
-                yield new Token(TokenType.PLUS); 
+                yield new Tokens.PlusToken(); 
                 this.advance();
             } else if( this.currentChar == '*' ) {
-                yield new Token(TokenType.MULTIPLY); 
+                yield new Tokens.MultiplyToken(); 
                 this.advance();
             } else if( this.currentChar == '/' ) {
-                yield new Token(TokenType.DIVIDE); 
+                yield new Tokens.DivideToken(); 
                 this.advance();
             } else if( this.currentChar == '(' ) {
-                yield new Token(TokenType.L_PARENTHESIS); 
+                yield new Tokens.LeftPerenthesisToken(); 
                 this.advance();
             } else if( this.currentChar == ')' ) {
-                yield new Token(TokenType.R_PARENTHESIS); 
+                yield new Tokens.RightPerenthesisToken(); 
                 this.advance();
             } else {
                 console.log("invalid character '" + this.currentChar + "' ")
@@ -82,14 +83,15 @@ export class Lexer {
         if(number_str.startsWith('.')) number_str = "0" + number_str;
         if(number_str.endsWith('.')) {
             // TODO change tokens to hold metadata, stack pointers, and error data
-            return new Token(TokenType.ERROR, "Syntax error: Cannot end number with '.'");
+            // return new Token(TokenType.ERROR, "Syntax error: Cannot end number with '.'");
+            throw new Error("Syntax error: Cannot end number with '.'")
         }
 
         if (point_count == 0) {
             // there was no floating point value
-            return new Token(TokenType.INT, convert_to_float(number_str))
+            return new Tokens.IntToken(convert_to_float(number_str))
         } else {
-            return new Token(TokenType.FLOAT, convert_to_float(number_str))
+            return new Tokens.FloatToken(convert_to_float(number_str))
         }
     }
 }

@@ -1,79 +1,74 @@
-import { Token, TokenType } from "./tokens";
-import ParseResult from "./ParseResult"
-import { MultiplyNode, NumberNode, AddNode, SubtractNode, DivideNode, BiOpNode, BaseNode, IntNode, FloatNode } from "./nodes";
+import * as Tokens from "./tokens";
+import ParseResult from "./parse_result"
+import * as Nodes from "./nodes";
 
 
 export class Parser {
-    tokens: IterableIterator<Token>;
-    current_token:Token;
-    constructor(tokens : IterableIterator<Token>) {
+    private tokens: IterableIterator<Tokens.BaseToken>;
+    private current_token?:Tokens.BaseToken;
+    constructor(tokens : IterableIterator<Tokens.BaseToken>) {
         this.tokens = tokens
-        this.current_token = new Token(TokenType.NO_TOKEN, "If nimmy sees this VI VON ZULUL")
         this.advance();
     }
-    advance() {
+
+    private advance() {
         var res = this.tokens.next();
         this.current_token = res.value;
         if (res.done) {
-            this.current_token = new Token(TokenType.NO_TOKEN, "This token was generated after the parer parsed all the tokens.");
+            this.current_token = undefined;
         }
     }
-    parse(): ParseResult {
-        if(this.current_token.type == TokenType.NO_TOKEN) {
-            return new ParseResult(true, new BaseNode(), "No tokens to parse.");
+
+    public parse(): ParseResult {
+        if(this.current_token == undefined) {
+            return new ParseResult(true, new Nodes.BaseNode(), "No tokens to parse.");
         }
         var result = this.expression();
         
         return new ParseResult(true, result)
     }
 
-    expression(): BaseNode {
-        var result: BaseNode = this.term()
-        while (this.current_token.type != TokenType.NO_TOKEN && 
-        (this.current_token.type == TokenType.PLUS || this.current_token.type == TokenType.MINUS)) {
-            if (this.current_token.type == TokenType.PLUS) {
+    private expression(): Nodes.BaseNode {
+        var result: Nodes.BaseNode = this.term()
+        while (this.current_token != undefined && 
+        (this.current_token instanceof Tokens.PlusToken || this.current_token instanceof Tokens.MinusToken)) {
+            if (this.current_token instanceof Tokens.PlusToken) {
                 this.advance()
-                result = new AddNode(result, this.term())
-            } else if (this.current_token.type == TokenType.MINUS) {
+                result = new Nodes.AddNode(result, this.term())
+            } else if (this.current_token instanceof Tokens.MinusToken) {
                 this.advance()
-                result = new SubtractNode(result, this.term())
+                result = new Nodes.SubtractNode(result, this.term())
             }
         }
         return result;
     }
 
-    term(): BaseNode {
-        var result: BaseNode = this.factor()
-        while (this.current_token.type != TokenType.NO_TOKEN && 
-        (this.current_token.type == TokenType.DIVIDE || this.current_token.type == TokenType.MULTIPLY)) {
-            if (this.current_token.type == TokenType.DIVIDE) {
+    private term(): Nodes.BaseNode {
+        var result: Nodes.BaseNode = this.factor()
+        while (this.current_token != undefined && 
+        (this.current_token instanceof Tokens.DivideToken || this.current_token instanceof Tokens.MultiplyToken)) {
+            if (this.current_token instanceof Tokens.DivideToken) {
                 this.advance()
-                result = new DivideNode(result, this.factor())
-            } else if (this.current_token.type == TokenType.MULTIPLY) {
+                result = new Nodes.DivideNode(result, this.factor())
+            } else if (this.current_token instanceof Tokens.MultiplyToken) {
                 this.advance()
-                result = new MultiplyNode(result, this.factor())
+                result = new Nodes.MultiplyNode(result, this.factor())
             }
         }
         return result;
     }
 
-    factor() : NumberNode {
-        var token:Token = this.current_token
+    private factor() : Nodes.ValueNode<number> {
+        var token: Tokens.BaseToken | undefined = this.current_token
 
-        if(token.type == TokenType.INT ) {
+        if(token instanceof Tokens.IntToken ) {
             this.advance()
-            return new IntNode(token.value/* token value will always be `number` on int and float */)
+            return new Nodes.IntNode(token.value/* token value will always be `number` on int and float */)
         }
-        if(token.type == TokenType.FLOAT ) {
+        if(token instanceof Tokens.FloatToken ) {
             this.advance()
-            return new FloatNode(token.value/* token value will always be `number` on int and float */)
+            return new Nodes.FloatNode(token.value/* token value will always be `number` on int and float */)
         }
-
-        // return this.raise_error("Invalid syntax.")
         throw new Error("Syntax error")
-    }
-
-    raise_error(message?:string): ParseResult {
-        return new ParseResult(false, new BaseNode(), message)
     }
 }
