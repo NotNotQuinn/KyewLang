@@ -15,11 +15,7 @@ multiplication and division.
 ```txt
 "1 + 1" -> 2
 "1 + 2 * 3" -> 7
-```
-Thats it for now, but I have a few things planned. 
-
-For example:
-```
 "(1 + 2) * 3" -> 9
+"12345/6" -> 2057.5
 ```
 Things I dont know what the syntax for yet are in grammer.md.
