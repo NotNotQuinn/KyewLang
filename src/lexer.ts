@@ -88,7 +88,7 @@ export class Lexer {
         } 
         if(number_str.startsWith('.')) number_str = "0" + number_str;
         if(number_str.endsWith('.')) {
-            // TODO change tokens to hold metadata, stack pointers, and error data
+            // TODO refactor the lexer, and parser to use and look for errors in tokens and nodes 
             throw new Error("Syntax error: Cannot end number with '.'")
         }
 
