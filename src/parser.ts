@@ -21,7 +21,7 @@ export class Parser {
 
     public parse(): ParseResult {
         if(this.current_token == undefined) {
-            return new ParseResult(true, new Nodes.BaseNode());
+            return new ParseResult(true)
         }
         var result = this.expression();
         
@@ -45,14 +45,22 @@ export class Parser {
 
     private term(): Nodes.BaseNode {
         var result: Nodes.BaseNode = this.factor()
-        while (this.current_token != undefined && 
-        (this.current_token instanceof Tokens.DivideToken || this.current_token instanceof Tokens.MultiplyToken)) {
-            if (this.current_token instanceof Tokens.DivideToken) {
-                this.advance()
-                result = new Nodes.DivideNode(result, this.factor())
-            } else if (this.current_token instanceof Tokens.MultiplyToken) {
-                this.advance()
-                result = new Nodes.MultiplyNode(result, this.factor())
+        if(this.current_token !instanceof Tokens.PlusToken || this.current_token !instanceof Tokens.MinusToken) {
+            while (this.current_token != undefined && 
+            (this.current_token instanceof Tokens.DivideToken || this.current_token instanceof Tokens.MultiplyToken)) {
+                if (this.current_token instanceof Tokens.DivideToken) {
+                    this.advance()
+                    result = new Nodes.DivideNode(result, this.factor())
+                } else if (this.current_token instanceof Tokens.MultiplyToken) {
+                    this.advance()
+                    result = new Nodes.MultiplyNode(result, this.factor())
+                }
+            }
+            return result;
+        } else {
+            if(this.current_token instanceof Tokens.MinusToken) {
+                this.advance();
+                return new Nodes.NegativeNode(this.term())
             }
         }
         return result;
@@ -63,13 +71,11 @@ export class Parser {
 
         if(token instanceof Tokens.IntToken ) {
             this.advance()
-            return new Nodes.IntNode(token.value/* token value will always be `number` on int and float */)
-        }
-        if(token instanceof Tokens.FloatToken ) {
+            return new Nodes.IntNode(token.value/*/token value will always be `number` on int and float/*/)
+        } else if(token instanceof Tokens.FloatToken ) {
             this.advance()
-            return new Nodes.FloatNode(token.value/* token value will always be `number` on int and float */)
-        }
-        if(token instanceof Tokens.LeftPerenthesisToken) {
+            return new Nodes.FloatNode(token.value/*token value will always be `number` on int and float*/)
+        } else if(token instanceof Tokens.LeftPerenthesisToken) {
             this.advance()
             var node = this.expression()
             if (token !instanceof Tokens.RightPerenthesisToken) {
@@ -77,7 +83,8 @@ export class Parser {
             }
             this.advance()
             return node;
+        } else {
+            throw new Error("Syntax error, unexpected token")
         }
-        throw new Error("Syntax error")
     }
 }

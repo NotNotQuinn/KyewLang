@@ -66,10 +66,12 @@ export class Lexer {
         }
     }
 
-    generate_number() {
+    generate_number(): Tokens.BaseToken {
         let number_str : string | undefined="";
         if (number_str === undefined) {
-            throw new Error("Syntax error, tried to generate token when current character is undefined.")
+            let out = new Tokens.BaseToken()
+            //out.setTrace("Attempted to generate number token when current character is undefined.", new Trace.SourceLine(this.source.getLineNumberAt(this.pos), ))
+            return out
         }
         let point_count = 0;
         while (this.currentChar != undefined && (DIGITS.test(this.currentChar) || this.currentChar == '.')) {

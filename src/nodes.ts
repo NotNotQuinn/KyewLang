@@ -5,6 +5,8 @@ import { TraceableError, NodeViewError } from "./errors";
 /***********************
  BUILDING BLOCK NODES 
 ************************/
+
+/** */
 export class BaseNode extends TraceableError {
     constructor() {
         super()
@@ -62,6 +64,8 @@ export class ValueNode<T> extends BaseNode {
 /***********************
  VALUE NODES 
 ************************/
+
+/** */
 export class IntNode extends ValueNode<number> {
     constructor(value:number) {
         super(value)
@@ -75,8 +79,26 @@ export class FloatNode extends ValueNode<number> {
 }
 
 /***********************
+ UNARY OPERATION NODES 
+************************/
+
+/** */
+export class NegativeNode extends UnaryOperatorNode {
+    constructor(child:BaseNode) {
+        super(child);
+    }
+    visit() {
+        return -this.child.visit();
+        // BUG implicitly casts value to number.
+        // can be fixed by custom types.
+    }
+}
+
+/***********************
  BINARY OPERATION NODES 
 ************************/
+
+/** */
 export class AddNode extends BinaryOperatorNode {
     constructor(child_1: BaseNode, child_2: BaseNode) {
         super(child_1, child_2)

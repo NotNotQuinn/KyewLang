@@ -2,47 +2,52 @@ import * as Trace from "./stacktrace";
 
 export class BaseError {
     private _errorMessage?: string;
+        
+    constructor(message?:string) {
+        this.errorMessage = message
+    }
 
     isError(): boolean {
         return typeof this._errorMessage == 'string';
     }
 
-    setErrorMessage(message:string) {
+    set errorMessage(message:string|undefined) {
         if(this.isError()) {
             throw Error(`Cannot re-assign error message ('${this._errorMessage}' to '${message}')`)
         }
         this._errorMessage = message
     }
-    getErrorMessage() {
+
+    get errorMessage() {
         return this._errorMessage;
     }
-    constructor() {
-    }
-    getDisplayError() {
+
+    get displayError() {
         return this._errorMessage || ""
     }
 }
 
 export class TraceableError extends BaseError {
     child?: TraceableError;
-    private _codeSnippet?: Trace.SourceLine;
-    constructor() {
+    private _line_segment?: Trace.SourceLine;
+    constructor(message?:string, codeSnippet?:Trace.SourceLine) {
         super()
     }
     setTrace(message:string, codeSnippet:Trace.SourceLine) {
-        this.setErrorMessage(message);
-        this.setCodeSnippet(codeSnippet);
+        this.errorMessage = message;
+        this.codeSnippet = codeSnippet;
     }
-    setCodeSnippet(codeSnippet:Trace.SourceLine) {
-        if(this._codeSnippet != undefined) {
+    set codeSnippet(codeSnippet:Trace.SourceLine|undefined) {
+        if(this._line_segment != undefined) {
             throw Error(`Cannot re-assign code snippet.`)
         }
-        this._codeSnippet = codeSnippet;
+        this._line_segment = codeSnippet;
     }
-    getCodeSnippet() {
-        return this._codeSnippet
+    get codeSnippet() {
+        return this._line_segment
     }
-    getDisplayError(first:boolean=true, padding:number=0) : string {
+
+    __getDisplayError(first:boolean=true, padding:number=5) : string {
         var out="";
         var next_padding = padding+4;
         if(!first) {
@@ -55,23 +60,21 @@ export class TraceableError extends BaseError {
         out += (
             // this is the filename. 
             // TODO use paths not filenames.
-            (this._codeSnippet?.from.source.filename || "").cyan.bold + 
+            (this._line_segment?.from.source.filename || "").cyan.bold + 
             // this adds ":line:col" to the filename, so you know where the error is. 
-            `${":".grey}${this._codeSnippet?.from.line.toString().yellow}${":".grey}${this._codeSnippet?.from.collumn.toString().yellow}`
+            `${":".grey}${this._line_segment?.from.line.toString().yellow}${":".grey}${this._line_segment?.from.collumn.toString().yellow}`
         ) + ` \n`  // end of the filename line.
 
         // This gets the display string for the code that generated the error, and indents it all by 2
-        out += this._codeSnippet?.getDisplayWithArrows(this.getErrorMessage() || "<no error message>", 2 ) + '\n';
+        out += this._line_segment?.getDisplayWithArrows(this.errorMessage || "<no error message>", 2 ) + '\n';
         if(this.child)
             // if there is a child error, get ITS display string, and add it. 
-            out += this.child?.getDisplayError(false);
+            out += this.child?.__getDisplayError(false);
         
         // then add the padding to every line.
         var lines = out.split('\n')
         var new_lines: Array<string> = [];
         for(let i=0;i<lines.length;i++) {
-            // if padding is zero there still is none.
-            if(lines[i] == "") continue;
             new_lines[i] = " ".repeat(next_padding) +lines[i]
         }
         // rejoin the lines
@@ -79,8 +82,12 @@ export class TraceableError extends BaseError {
         
         // this is at the end to avoid padding
         // if we are the first error, display our error in bold and red at the top.
-        if(first) out = `Error: ${this.getErrorMessage()}\n`.red.bold + out;
+        if(first) out = `Error: ${this.errorMessage}\n`.red.bold + out;
         return out;
+    }
+
+    get displayError() {
+        return this.__getDisplayError(true, 4)
     }
 }
 
