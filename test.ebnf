@@ -1,0 +1,11 @@
+
+(* 
+I dont know what the syntax will be yet.
+also I have no idea what programs take in ebnf 
+files, I will most likely just use this as a 
+playgroud to mess with syntax ideas 
+*)
+<a> ::=  'a' <a> | <empty>;
+
+
+
