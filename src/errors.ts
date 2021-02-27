@@ -38,7 +38,7 @@ export class TraceableError extends BaseError {
         this.codeSnippet = codeSnippet;
     }
     set codeSnippet(codeSnippet:Trace.SourceLine|undefined) {
-        if(this._line_segment != undefined) {
+        if(this._line_segment !== undefined) {
             throw Error(`Cannot re-assign code snippet.`)
         }
         this._line_segment = codeSnippet;
@@ -47,12 +47,11 @@ export class TraceableError extends BaseError {
         return this._line_segment
     }
 
-    __getDisplayError(first:boolean=true, padding:number=5) : string {
+    __getDisplayError(first:boolean=true, padding:number=4) : string {
         var out="";
-        var next_padding = padding+4;
         if(!first) {
-            // the next_padding pads all the child errors with spaces, so child errors done need to pad, because it will already be padded.
-            next_padding=0;
+            // the padding pads all the child errors with spaces, so child errors done need to pad, because it will already be padded.
+            padding=0;
             // add a new line because it looks nicer when a child isnt right below the parent
             out += '\n'
         };
@@ -66,7 +65,7 @@ export class TraceableError extends BaseError {
         ) + ` \n`  // end of the filename line.
 
         // This gets the display string for the code that generated the error, and indents it all by 2
-        out += this._line_segment?.getDisplayWithArrows(this.errorMessage || "<no error message>", 2 ) + '\n';
+        out += this._line_segment?.getDisplayWithArrows( this.errorMessage || "<no error message>", 2 ) + '\n';
         if(this.child)
             // if there is a child error, get ITS display string, and add it. 
             out += this.child?.__getDisplayError(false);
@@ -75,10 +74,10 @@ export class TraceableError extends BaseError {
         var lines = out.split('\n')
         var new_lines: Array<string> = [];
         for(let i=0;i<lines.length;i++) {
-            new_lines[i] = " ".repeat(next_padding) +lines[i]
+            new_lines[i] = " ".repeat(padding) +lines[i]
         }
         // rejoin the lines
-        out = lines.join('\n')
+        out = new_lines.join('\n')
         
         // this is at the end to avoid padding
         // if we are the first error, display our error in bold and red at the top.
