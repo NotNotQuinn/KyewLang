@@ -1,66 +1,78 @@
+import { validateLocaleAndSetLanguage } from "typescript";
 import { BaseError, TraceableError } from "./errors";
+import { SourceLine, SourcePoint, SourceText } from "./stacktrace";
 
-/***********************
- BUILDING BLOCK TOKENS 
-************************/
-export class BaseToken extends TraceableError {
-    constructor() {
-        super()
+/**
+ * Token Types
+ */
+export enum TType {
+    // used
+    IntToken="IntToken",
+    FloatToken="FloatToken",
+    IdentifierToken="IdentifierToken",
+    KeywordToken="KeywordToken",
+
+    // unused - can be changed and have no effect
+    PlusToken="PlusToken",
+    MinusToken="MinusToken",
+    AsteriskToken="AsteriskToken",
+    ForwardSlashToken="ForwardSlashToken",
+    BackSlashToken="BackSlashToken",
+    LeftPerenthesisToken="LeftPerenthesisToken",
+    RightPerenthesisToken="RightPerenthesisToken",
+    NewlineToken="NewlineToken",
+
+}
+
+/**
+ * A lexical token.
+ */
+export class Token {
+    type: TType;
+    origin: SourceLine;
+    value?: string;
+
+    /**
+     * 
+     * @param obj Object containing information about the token being created.
+     * @param obj.type The type of token being created
+     * @param obj.origin The original text from source that created this token
+     * @param obj.value A string value of the token, unparsed
+     */
+    constructor(obj: { type: TType; origin: SourceLine; value?: string }) {
+        this.type = obj.type;
+        this.origin = obj.origin;
+        this.value = obj.value;
     }
 }
 
-export class ValueToken<T> extends BaseToken {
-    value:T;
-    constructor(value: T) {
-        super()
-        this.value = value
-    }
-}
 
-export class BinaryOperatorToken extends BaseToken {
-}
+// TODO put this somewhere else
+/*
+EXAMPLE HOW TO CREATE TOKEN:
+```js
+var token = new Token({
+    // TType =  TokenType
+    type: TType.IdentifierToken, 
+    origin: new SourceLine({
+        // This object is created when the token is created
+        // because it points to the specific place where 
+        // the token came from
 
-/***********************
- VALUE TOKENS 
-************************/
-export class IntToken extends ValueToken<number> {
-    constructor(int_value : number) {
-        if(int_value % 1 != 0) {
-            throw new TypeError(`Cannot have floating point value '${int_value}' in IntNode.`)
-        }
-        super(int_value)
-    }
-}
+        start: new SourcePoint({
+            // This object is also created when the token is created
+            char_num:1,
 
-export class FloatToken extends ValueToken<number> {
-    constructor(int_value : number) {
-        super(int_value)
-    }
-}
+            // The SourceText object is the only thing that is created before the token is
+            source: new SourceText("lol", "lol.txt")
+        }), 
+        length: 3
+    }),
 
-/***********************
- BINARY OPERATION TOKENS 
-************************/
-export class PlusToken extends BinaryOperatorToken {
-}
-
-export class MinusToken extends BinaryOperatorToken {
-}
-
-export class MultiplyToken extends BinaryOperatorToken {
-}
-
-export class DivideToken extends BinaryOperatorToken {
-}
-
-/***********************
- OTHER TOKENS 
-************************/
-export class LeftPerenthesisToken extends BaseToken {
-}
-
-export class RightPerenthesisToken extends BaseToken {
-}
-
-export class NewlineToken extends BaseToken {
-}
+    // optional for some token types because
+    // this is an identifier token the text 
+    // that the identifier IS is stored here.
+    value: "lol"
+})
+```
+*/

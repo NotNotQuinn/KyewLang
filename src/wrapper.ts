@@ -4,6 +4,7 @@ import { SourceText } from "./stacktrace";
 // import executor
 
 export class LexParseAndExecuteWrapper {
+    /*
     lexer: Lexer;
     parser: Parser;
     source: SourceText;
@@ -16,4 +17,5 @@ export class LexParseAndExecuteWrapper {
         // TODO make parser constructible without tokens
         this.parser = new Parser(this.lexer.make_tokens())
     }
+    */
 }
