@@ -1,4 +1,4 @@
-import { TraceableError, NodeViewError } from "./errors";
+import { NodeViewError } from "./errors";
 
 
 
@@ -7,16 +7,13 @@ import { TraceableError, NodeViewError } from "./errors";
 ************************/
 
 /** */
-export class BaseNode extends TraceableError {
+export class BaseNode {
     constructor() {
-        super()
     }
     display() {
-        
     }
     visit():any {
         throw new NodeViewError("Cannot visit base nodes or visit not implemented.");
-
     }
 }
 
@@ -46,18 +43,14 @@ export class BinaryOperatorNode extends BaseNode {
 
 }
 
-export class ValueNode<T> extends BaseNode {
-    value: T;
-    constructor(value:T) {
+export class ValueNode extends BaseNode {
+    value: string;
+    constructor(value:string) {
         super()
         this.value = value
     }
     display() {
         return `(${this.value})`
-    }
-    visit() {
-        // TODO create custom classes for in-lang numbers and stuff
-        return this.value;
     }
 }
 
@@ -66,14 +59,14 @@ export class ValueNode<T> extends BaseNode {
 ************************/
 
 /** */
-export class IntNode extends ValueNode<number> {
-    constructor(value:number) {
+export class IntNode extends ValueNode {
+    constructor(value:string) {
         super(value)
     }
 }
 
-export class FloatNode extends ValueNode<number> {
-    constructor(value:number) {
+export class FloatNode extends ValueNode {
+    constructor(value:string) {
         super(value)
     }
 }
@@ -86,11 +79,6 @@ export class FloatNode extends ValueNode<number> {
 export class NegativeNode extends UnaryOperatorNode {
     constructor(child:BaseNode) {
         super(child);
-    }
-    visit() {
-        return -this.child.visit();
-        // BUG implicitly casts value to number.
-        // can be fixed by custom types.
     }
 }
 
@@ -106,9 +94,6 @@ export class AddNode extends BinaryOperatorNode {
     getOperatorString() {
         return '+'
     }
-    visit() {
-        return (this.child_1.visit() + this.child_2.visit());
-    }
 }
 
 export class SubtractNode extends BinaryOperatorNode {
@@ -117,9 +102,6 @@ export class SubtractNode extends BinaryOperatorNode {
     }
     getOperatorString() {
         return '-'
-    }
-    visit() {
-        return (this.child_1.visit() - this.child_2.visit());
     }
 }
 
@@ -130,9 +112,6 @@ export class MultiplyNode extends BinaryOperatorNode {
     getOperatorString() {
         return '*'
     }
-    visit() {
-        return (this.child_1.visit() * this.child_2.visit());
-    }
 }
 
 export class DivideNode extends BinaryOperatorNode {
@@ -141,8 +120,5 @@ export class DivideNode extends BinaryOperatorNode {
     }
     getOperatorString() {
         return '/'
-    }
-    visit() {
-        return (this.child_1.visit() / this.child_2.visit());
     }
 }
