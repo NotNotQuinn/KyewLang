@@ -1,4 +1,4 @@
-import { TraceableError, NodeViewError } from "./errors";
+import { TraceableError, NodeViewError } from "./errors/errors";
 
 
 

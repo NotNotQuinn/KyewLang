@@ -1,6 +1,6 @@
 import { validateLocaleAndSetLanguage } from "typescript";
-import { BaseError, TraceableError } from "./errors";
-import { SourceLine, SourcePoint, SourceText } from "./stacktrace";
+import { BaseError, TraceableError } from "./errors/errors";
+import { SourceLine, SourcePoint, SourceText } from "./trace/stacktrace";
 
 /**
  * Token Types

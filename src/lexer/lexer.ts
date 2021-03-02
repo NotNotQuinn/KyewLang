@@ -1,6 +1,6 @@
 import { LexerState as s, LexerState } from "./lexer_state";
-import { Token, TType } from "./tokens";
-import * as Trace from "./stacktrace"; 
+import { Token, TType } from "../custom/tokens";
+import * as Trace from "../custom/trace/stacktrace"; 
 
 // TODO move these keywords and operators to annother file?
 // this file could get crouded if we keep them here

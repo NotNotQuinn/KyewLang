@@ -1,6 +1,6 @@
-import { Lexer } from "./lexer";
-import { Parser } from "./parser";
-import { SourceText } from "./stacktrace";
+import { Lexer } from "./lexer/lexer";
+import { Parser } from "./parser/parser";
+import { SourceText } from "./custom/trace/stacktrace";
 // import executor
 
 export class LexParseAndExecuteWrapper {

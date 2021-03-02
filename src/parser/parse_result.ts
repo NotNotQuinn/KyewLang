@@ -1,4 +1,4 @@
-import { BaseNode } from "./nodes";
+import { BaseNode } from "../custom/nodes";
 
 export default class ParseResult {
     entryNode?: BaseNode;

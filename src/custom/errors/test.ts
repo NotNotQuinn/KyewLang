@@ -1,6 +1,6 @@
 import * as e from "./errors";
-import { SourceLine, SourcePoint, SourceText } from "./stacktrace";
-import { Token, TType } from "./tokens";
+import { SourceLine, SourcePoint, SourceText } from "../trace/stacktrace";
+import { Token, TType } from "../tokens";
 
 var err = new e.TraceableError()
 var err2 = new e.TraceableError()

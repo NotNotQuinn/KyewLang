@@ -1,4 +1,4 @@
-import * as Trace from "./stacktrace";
+import * as Trace from "../trace/stacktrace";
 
 export class BaseError {
     private _errorMessage?: string;
