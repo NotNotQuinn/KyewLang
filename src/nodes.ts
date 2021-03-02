@@ -1,4 +1,4 @@
-import { NodeViewError } from "./errors";
+import { TraceableError, NodeViewError } from "./errors";
 
 
 
@@ -7,8 +7,9 @@ import { NodeViewError } from "./errors";
 ************************/
 
 /** */
-export class BaseNode {
+export class BaseNode extends TraceableError {
     constructor() {
+        super()
     }
     display() {
     }
