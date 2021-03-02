@@ -15,8 +15,8 @@ const defalt_run_opts: run_opts = {
 export function execute( code : string , options : run_opts = defalt_run_opts): any {
     const source = new Trace.SourceText(code, "<program>") 
     const lexer =  new Lexer(source)
-    lexer.lex_all()
-    return lexer.tokens
+    console.log(lexer.lex_all().tokens)
+    return new Parser(lexer.tokens).parse()
     
     /*
     
