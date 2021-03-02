@@ -18,13 +18,13 @@ Ther is a spelling mistake on this line.
 This is a error. It's also a very long message to test how the WORD WRAPPING works on the terminal when you have very long lines. I'm not sure if this is enough so I'm just going to keep writing.
 This is an short line.
 `, "testcode.txt")
-err.setTrace("This is a test error.", new SourceLine( { char_num: 3 },  1, source ))
-// err2.setTrace("These words are not allowed.", new SourceLine({ line: 4, from: 37, length: 11, source }))
-// err3.setTrace("There* oops", new SourceLine({ line: 7, from: 1, length: 4, source}))
-// err4.setTrace("an* oops", new SourceLine({ line: 8, from: 9, length: 1, source}, 1, source))
-// err5.setTrace(
-// "a* oops. This is a very long error message, I mean like Its very long. I am testing to see how the wrapping works in the terminal. I think this should be about enough to do that.",
-// new SourceLine({line: 9, from: 9, length: 2, source}))
+err.setTrace("This is a test error.", new SourceLine( { char_num: 2 },  1, source ))
+err2.setTrace("These words are not allowed.", new SourceLine({ char_num: 178 }, 11, source ))
+err3.setTrace("There* oops", new SourceLine({ char_num: 237 }, 4, source ))
+err4.setTrace("an* oops", new SourceLine({ char_num: 286 }, 1, source ))
+err5.setTrace(
+"a* oops. This is a very long error message, I mean like Its very long. I am testing to see how the wrapping works in the terminal. I think this should be about enough to do that.",
+new SourceLine({ char_num: 482 }, 2, source ))
 
 err.child = err2
 err2.child = err3
@@ -32,13 +32,16 @@ err3.child = err4
 err4.child = err5
 
 
+
+// TODO make the SourcePoint and SourceLine stuff store an ID of the source they are referencing
+// TODO and allow error objects to look up sources by id somehow
 var almost_empty=new SourceText('1\n2',"almost-empty.txt");
 var err6=new e.TraceableError();
 var err7=new e.TraceableError();
 var err8=new e.TraceableError()
-// err6.setTrace("This should be 1", new SourceLine({line: almost_empty.getLineNumberAt(1), from: 1, length: 1, source: almost_empty}))
-// err7.setTrace("It shoube possible to capture a newline character", new SourceLine({ line: almost_empty.getLineNumberAt(2), from: 1, length: 1, source: almost_empty}))
-// err8.setTrace("This should be 2", new SourceLine({line: almost_empty.getLineNumberAt(3), from: 1, length: 1, source: almost_empty}))
+err6.setTrace("This should be 1", new SourceLine({ char_num: 1 }, 1, almost_empty ))
+err7.setTrace("It shoube possible to capture a newline character", new SourceLine({ char_num: 2 }, 1, almost_empty ))
+err8.setTrace("This should be 2", new SourceLine({ char_num: 3 }, 1, almost_empty ))
 err5.child = err6
 err6.child = err7
 err7.child = err8

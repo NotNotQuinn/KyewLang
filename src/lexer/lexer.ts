@@ -179,6 +179,7 @@ export class Lexer {
                     case ".":
                         this.state = s.NUMBER_WITH_DECIMAL;
                         // dont break because this is still going to be added to the buffer
+                        // @fallthrough
                     case "0": case "1": case "2": case "3": case "4":
                     case "5": case "6": case "7": case "8": case "9":
                         this.buf += this.curChar;

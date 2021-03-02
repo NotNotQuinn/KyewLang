@@ -11,6 +11,7 @@ export class SourceText {
     /**
      * Stores the text.
      * @param text The text to store
+     * @param filename Filename of source
      */
     constructor(text:string, filename:string) {
         this.rawText = text
@@ -87,7 +88,7 @@ export class SourceLine {
      * @param length Length of the line to capture
      * @param source The raw text to reference
      */
-    constructor( start : SourcePoint, length: number, source: SourceText ) {
+    constructor( start: SourcePoint, length: number, source: SourceText ) {
         if( length <= 0 ) {
             throw new Error(`Length (${length}) cannot be less than 1. Try using SourcePoint.`)
         }
