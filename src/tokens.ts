@@ -11,6 +11,7 @@ export enum TType {
     FloatToken="FloatToken",
     IdentifierToken="IdentifierToken",
     KeywordToken="KeywordToken",
+    PunctuationToken="PunctuationToken",
 
     // unused - can be changed and have no effect
     PlusToken="PlusToken",

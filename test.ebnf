@@ -5,7 +5,28 @@ also I have no idea what programs take in ebnf
 files, I will most likely just use this as a 
 playgroud to mess with syntax ideas 
 *)
-<a> ::=  'a' <a> | <empty>;
+
+expression ::= <term> [(<add> | <subtract>) <term>]*;
+
+
+term ::= <factor> [(<multiply> | <divide>) <factor>]*;
+
+
+factor ::= <int_literal> | <float_literal>
+        |  <left_paren> <expression> <right_paren>;
+
+
+identifier ::= <letter> [<letter> | <digit>]*;
+
+
+left_paren ::= '(';
+right_paren ::= ')';
+
+add ::= '+';
+subtract ::= '-';
+
+multiply ::= '*';
+divide ::= '/';
 
 
 

@@ -1,16 +1,30 @@
 # Grammer
 This is a file explainging the grammer of the langueage
 
-```txt
-expression : term [PLUS|MINUS term]*
+```ebnf
+expression ::= <term> [(<add> | <subtract>) <term>]*;
 
-term       : factor [MULTIPLY|DIVIDE factor]*
-           : PLUS|MINUS term
 
-factor     : INT|FLOAT
+term ::= <factor> [(<multiply> | <divide>) <factor>]*;
+
+
+factor ::= <int_literal> | <float_literal>
+        |  <left_paren> <expression> <right_paren>;
+
+left_paren ::= '(';
+right_paren ::= ')';
+
+add ::= '+';
+subtract ::= '-';
+
+multiply ::= '*';
+divide ::= '/';
+
+
+
+
 ```
 ## Ideas
-- `()` order of ops
 - Data types
 - idnetifier
   - Variables

@@ -16,123 +16,114 @@ export class SourceText {
         this.rawText = text
         this.filename = filename
     }
-    getLineNumberAt(char_num:number): number {
-        // no newline characters = first line.
-        let line_number = 1;
-        for(let curChar = 1; curChar < char_num; curChar++) {
-            if (this.rawText[curChar - 1] == '\n') {
-                line_number++;
-            }
-        }
-        return line_number;
-    }
 
-    getPointAt(char_num:number): { line: number; collumn: number } {
-        var line:number=1, collumn:number=1;
+    getPointAt(point:SourcePoint): { line: number; collumn: number } {
+        var line:number=1, collumn:number=0;
 
-        for(let curChar = 1; curChar < char_num; curChar++) {
+        for(let curChar = 1; curChar < point.char_num; curChar++) {
             if (this.rawText[curChar - 1] == '\n') {
                 line++;
-                collumn = 1;
+                collumn = 0;
             }
             collumn++;
         }
 
         return {line: line, collumn: collumn}
     }
+
+    getFullLine(point: SourcePoint ) :string {
+        var lines = this.rawText.split('\n')
+        var line = this.getPointAt(point).line
+        var out = lines[line-1];
+        // because split removes the newline character, and we want to get the entire line, we will add the newline character to the end, if its not the last line.
+        if( line - 1 !== lines.length) {
+            out += '\n';
+        }
+        return out;
+    }
 }
+
+
+
+
+/**
+ * Stores the location of a segment of text
+ */
+export class Segment {
+    readonly start: number;
+    readonly end: number;
+
+    /**
+     * @param start The character number of the start.
+     * @param end The character number of the end.
+     */
+    constructor(start: number, end: number) {
+        this.start = start;
+        this.end = end;
+    }
+}
+
 
 export class SourcePoint {
 
-    readonly line: number;
-    readonly collumn: number;
-    readonly source: SourceText;
+    readonly char_num: number;
 
     /**
      * Stores a location in a text.
-     * @param line The line number of the point.
-     * @param collumn The collumn number of the point.
-     * @param source The raw text to reference.
      */
-    constructor(obj : {line: number, collumn: number, source: SourceText, char_num?: undefined }
-                    | {line?: undefined, collumn?: undefined, source: SourceText, char_num: number } ) {
-        if( obj.char_num !== undefined ) {
-            this.source = obj.source
-            var thing = obj.source.getPointAt(obj.char_num)
-            this.line = thing.line
-            this.collumn = thing.collumn
-        } else {
-            if( obj.line < 0 ) throw new Error(`Line (${obj.line}) cannot be negative.`);
-            if( obj.collumn < 0 ) throw new Error(`Collumn (${obj.collumn}) cannot be negative.`);
-            var lines = obj.source.rawText.split(/\r\n|\r|\n/);
-            if( obj.line > lines.length ) throw new Error(`Line (${obj.line}) is outside of source length (${lines.length}).`)
-            if( lines[obj.line-1].length < obj.collumn ) throw new Error(`Collumn (${obj.collumn}) is ouside of line length (${lines.length}).`)
-            this.line = obj.line
-            this.collumn = obj.collumn
-            this.source = obj.source
-        }
-    }
-    getFullLine():string {
-        return this.source.rawText.split('\n')[this.line-1]
+    constructor(char_num: number) {
+        this.char_num=char_num;
     }
 }
 
 export class SourceLine {
 
-    readonly from: SourcePoint;
+    readonly start: SourcePoint;
     readonly length: number;
 
     /**
      * Stores a part of a line in a text.
-     * @param obj Object containing data about what line and what part of it you want to store
-     * @param obj.start A SourcePoint of where the line starts
-     * @param obj.from Collumn number of the starting point
-     * @param obj.length Length of the line to capture
-     * @param obj.source The raw text to reference
+     * @param start A SourcePoint of where the line starts
+     * @param length Length of the line to capture
+     * @param source The raw text to reference
      */
-    constructor(  obj  : { start: SourcePoint, length: number, line?: undefined, from?: undefined, source?: undefined }
-                       | { start?: undefined, length: number,  line: number, from:number, source: SourceText }           ) {
-        if( obj.start instanceof SourcePoint ) {
-            this.from = obj.start;
-            if( obj.start.collumn + obj.length - 1 > obj.start.getFullLine().length ) throw new Error(`Captured line (${obj.line}) is outside of line length.`)
-        } else if ( obj.from !== undefined && obj.line !== undefined && obj.source !== undefined ) {
-            if( obj.from + obj.length - 1 > obj.source.rawText.split('\n')[obj.line-1].length ) throw new Error(`Captured line (${obj.line}) is outside of line length.`)
-            this.from = new SourcePoint({line: obj.line, collumn: obj.from, source: obj.source})
-        } else {
-            throw new Error("typescript is broken, this should never happen. if it does.... Uhh, contact devs please lol")
+    constructor( start : SourcePoint, length: number, source: SourceText ) {
+        if( length <= 0 ) {
+            throw new Error(`Length (${length}) cannot be less than 1. Try using SourcePoint.`)
         }
-        if( obj.length <= 0 ) throw new Error(`Length (${obj.length}) cannot be less than 1. Try using SourcePoint.`)
-        this.length = obj.length;
+        this.length = length;
+        this.start = start;
+        if( source.getPointAt(start).collumn + length - 1 >  source.getFullLine(start).length ) { 
+            throw new Error(`Captured line (${source.getPointAt(start).line}) is outside of line length.`)
+        }        
     }
-    getLineCaptured() : string {
-        const source = this.from.source;
-        return this.getFullLine().substr(this.from.collumn, this.length)
-
+    getLineCaptured(source: SourceText) : string {
+        return this.getFullLine(source).substr(source.getPointAt(this.start).collumn, this.length)
     }
 
-    getFullLine():string {
-        return this.from.getFullLine()
+    getFullLine(source: SourceText):string {
+        return source.getFullLine(this.start);
     }
 
     // can be public
-    private getArrows(padding:number=0):string {
+    private getArrows(source: SourceText, padding:number=0):string {
         var arrows = "^".repeat( this.length );
-        return this.getWhitespace(padding) + arrows
+        return this.getWhitespace(source, padding) + arrows
     }
 
     // can be public
-    private getWhitespace(padding:number=0) {
-        return " ".repeat(padding) + " ".repeat((this.from.collumn ? this.from.collumn : 1 ) -1)
+    private getWhitespace(source: SourceText, padding:number=0) {
+        return " ".repeat(padding) + " ".repeat((source.getPointAt(this.start).collumn ? source.getPointAt(this.start).collumn : 1 ) -1)
     }
 
-    getDisplayWithArrows(message:string, padding:number=0): string {
+    getDisplayWithArrows(source: SourceText, message:string, padding:number=0): string {
         // Dont wrap the code. only the error message
-        var out = " ".repeat(padding) + this.getFullLine() + '\n';
+        var out = " ".repeat(padding) + this.getFullLine(source).replace("\n", "") + '\n';
         // TODO dynamic colors
-        out += this.getArrows(padding).red + '\n';
+        out += this.getArrows(source, padding).red + '\n';
         var lines = wordWrap(message, 80);
         lines.split('\n').forEach(line => {
-            out += (this.getWhitespace(padding) + (line)).yellow + '\n';
+            out += (this.getWhitespace(source, padding) + (line)).yellow + '\n';
         })
         return out.substr(0, out.length - 1) // remove trailing newline
     }

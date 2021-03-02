@@ -22,7 +22,7 @@ export class BaseError {
         return this._errorMessage;
     }
 
-    get displayError() {
+    displayError(source: Trace.SourceText) {
         return this._errorMessage || ""
     }
 }
@@ -47,7 +47,7 @@ export class TraceableError extends BaseError {
         return this._line_segment
     }
 
-    __getDisplayError(first:boolean=true, padding:number=4) : string {
+    __getDisplayError(source: Trace.SourceText, first:boolean=true, padding:number=4) : string {
         var out="";
         if(!first) {
             // the padding pads all the child errors with spaces, so child errors done need to pad, because it will already be padded.
@@ -56,19 +56,21 @@ export class TraceableError extends BaseError {
             out += '\n'
         };
 
+        var point = source.getPointAt(this._line_segment?.start || { char_num: -1 })
+
         out += (
             // this is the filename. 
             // TODO use paths not filenames.
-            (this._line_segment?.from.source.filename || "").cyan.bold + 
+            (source.filename || "").cyan.bold + 
             // this adds ":line:col" to the filename, so you know where the error is. 
-            `${":".grey}${this._line_segment?.from.line.toString().yellow}${":".grey}${this._line_segment?.from.collumn.toString().yellow}`
+            `${":".grey}${point.line.toString().yellow}${":".grey}${point.collumn.toString().yellow}`
         ) + ` \n`  // end of the filename line.
 
         // This gets the display string for the code that generated the error, and indents it all by 2
-        out += this._line_segment?.getDisplayWithArrows( this.errorMessage || "<no error message>", 2 ) + '\n';
+        out += this._line_segment?.getDisplayWithArrows(source,  this.errorMessage || "<no error message>", 2 ) + '\n';
         if(this.child)
             // if there is a child error, get ITS display string, and add it. 
-            out += this.child?.__getDisplayError(false);
+            out += this.child?.__getDisplayError(source, false);
         
         // then add the padding to every line.
         var lines = out.split('\n')
@@ -85,8 +87,8 @@ export class TraceableError extends BaseError {
         return out;
     }
 
-    get displayError() {
-        return this.__getDisplayError(true, 4)
+    displayError(source: Trace.SourceText) {
+        return this.__getDisplayError(source, true, 4)
     }
 }
 
