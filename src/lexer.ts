@@ -1,3 +1,4 @@
+import { LexerState as s, LexerState } from "./lexer_state";
 import { Token, TType } from "./tokens";
 import * as Trace from "./stacktrace"; 
 
@@ -7,49 +8,13 @@ export const KEYWORDS : Array<string> = [
     "if"
 ]
 
-export const OPERATORS : Array<string> = [
-    "+",
-    "-",
-    "*",
-    "/",
-    "%",
-]
-
 //*************************************************************************************************************** */
 // This lexer is an implementation of a Fianite State Machine (FSM) -> can only be one of a finiate number of states
-// If you want to learn more look up Fianite State Machine on Wikipedia
+// If you want to learn more look up Fianite State Machine (or Fianite State Transducer, but thats all math shit) 
+// on Wikipedia
 //*************************************************************************************************************** */
 
-export enum LexerState {
-    // states = themeselves so I can read what state it is when its printed to the console.
 
-    /** Default state, buffer is clear. */
-    LOOKING="LOOKING",
-
-
-    /** Clear the buffer and register a token, next state is always `LOOKING`. */
-    CREATE_TOKEN="CREATE_TOKEN",
-
-    /** Currently processing a number. */
-    NUMBER="NUMBER",
-    /** Currently processing a number with a decimal. */
-    NUMBER_WITH_DECIMAL="NUMBER_WITH_DECIMAL",
-
-    /** Currently processing an identifier or keyword. */
-    IDENTIFIER_OR_KEYWORD="IDENTIFIER_OR_KEYWORD",
-    /** A keyword matches this string exactly, but it could also go on further. */
-    KEYWORD_MATCH="KEYWORD_MATCH",
-
-    /** Currently processing an operator or a punctuator. */
-    PUNCTUATION_OR_OPERATOR="PUNCTUATION_OR_OPERATOR",
-    /** An operator matches this string exatly, but could go on further, e.g. `=` vs. `==` */
-    OPERATOR_MATCH="OPERATOR_MATCH",
-    
-
-    /** Lexer has processed all tokens, this is the final state. */
-    DONE="DONE",
-}
-const s =  LexerState;
 export class Lexer {
     /** source text being lexed */
     public source: Trace.SourceText;
@@ -131,10 +96,26 @@ export class Lexer {
                         this.curPos++;
                     break;
 
-                    case " ": case "\t": case "\n":
-                        this.curPos++;
+                    case " ": case "\t":
                         console.log("whitespace")
+                        this.curPos++;
                         // whitespace
+                    break;
+
+                    case "\n":
+                        this.state = s.CREATE_TOKEN;
+                        this.curTokenStart = this.curPos;
+                        this.curTokenType = TType.NewlineToken;
+                        this.buf += this.curChar;
+                        this.curPos++;
+                    break;
+
+                    case ";":
+                        this.state = s.CREATE_TOKEN;
+                        this.curTokenStart = this.curPos;
+                        this.curTokenType = TType.PunctuationToken;
+                        this.buf += this.curChar;
+                        this.curPos++;
                     break;
 
                     // lowecase
@@ -160,38 +141,37 @@ export class Lexer {
                         // dont add to buf because we arent handling yet
                     break;
 
+                    // punctuation
                     case "(": case ")":  // order of operations
+
+                    // operators
                     case "-": case "+": case "*": case "/":  // add, subtract, multiply, divide
-                    case "%":  // modulas 
+                    case "%":  // modulo operator 
                     case "^":  // power
                         this.buf += this.curChar;
+                        this.curTokenStart = this.curPos;
                         this.state = s.PUNCTUATION_OR_OPERATOR;
+                        this.curPos++;
                     break;
 
                     default:
-                        console.log(`Unknown character: ${this.curChar}`)
+                        console.log(`Unknown character: '${this.curChar}'`)
                         this.curPos++;
-                    
+
                 }
             break;
 
 
             case s.PUNCTUATION_OR_OPERATOR:
-                if(OPERATORS.includes(this.buf)) {
-                    this.state = s.OPERATOR_MATCH
-                    break;
-                }
+                // TODO make comments
                 switch(this.curChar) {
-    
+
+                    default:
+                        this.curTokenType = TType.PunctuationToken;
+                        this.state = s.CREATE_TOKEN;
                 }
             break;
 
-
-            case s.OPERATOR_MATCH:
-                switch(this.curChar) {
-    
-                }
-            break;
 
 
             case s.NUMBER:
@@ -213,9 +193,6 @@ export class Lexer {
 
             case s.NUMBER_WITH_DECIMAL:
                 switch(this.curChar) {
-                    case ".":
-                        this.state = s.CREATE_TOKEN;
-                        // dont break because this is still going to be added to the buffer
                     case "0": case "1": case "2": case "3": case "4":
                     case "5": case "6": case "7": case "8": case "9":
                         this.buf += this.curChar;
@@ -300,13 +277,13 @@ export class Lexer {
                 }
                 this.tokens.push(new Token({
                     type: this.curTokenType,
-                    origin: new Trace.SourceLine({
-                        start: new Trace.SourcePoint({
-                            char_num: this.curTokenStart + 1, // add one becase curTokenStart is an index, and this is a number
-                            source: this.source
-                        }),
-                        length: this.curPos - this.curTokenStart
-                    }),
+                    origin: new Trace.SourceLine( 
+                        new Trace.SourcePoint(
+                            this.curTokenStart + 1, /* add one because character at index 0 is the first character*/
+                        ),
+                        this.curPos - this.curTokenStart,
+                        this.source
+                    ),
                     value: this.buf
                 }))
                 this.reset_lexer()
