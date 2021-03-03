@@ -1,7 +1,7 @@
 import { Parser } from "./parser/parser";
 import { Lexer } from "./lexer/lexer";
 import ParseResult from "./parser/parse_result";
-import * as Trace from "./custom/trace/stacktrace"
+import * as Trace from "./custom/trace/stacktrace";
 
 export type run_opts = {
     show_tokenized_code: boolean;

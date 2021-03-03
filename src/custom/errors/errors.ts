@@ -32,6 +32,8 @@ export class TraceableError extends BaseError {
     private _line_segment?: Trace.SourceLine;
     constructor(message?:string, codeSnippet?:Trace.SourceLine) {
         super()
+        this.errorMessage=message;
+        this.codeSnippet=codeSnippet;
     }
     setTrace(message:string, codeSnippet:Trace.SourceLine) {
         this.errorMessage = message;

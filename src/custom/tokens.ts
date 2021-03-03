@@ -65,7 +65,7 @@ var token = new Token({
             char_num:1,
 
             // The SourceText object is the only thing that is created before the token is
-            source: new SourceText("lol", "lol.txt")
+            source: new SourceText("lol, this is a cool text file!!\n", "lol.txt")
         }), 
         length: 3
     }),
