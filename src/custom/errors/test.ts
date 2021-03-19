@@ -1,6 +1,6 @@
 import * as e from "./errors";
 import { SourceLine, SourcePoint, SourceText } from "../trace/stacktrace";
-import { Token, TType } from "../tokens";
+import { Token, TokenType } from "../tokens";
 
 var err = new e.TraceableError()
 var err2 = new e.TraceableError()
@@ -30,6 +30,18 @@ err.child = err2
 err2.child = err3
 err3.child = err4
 err4.child = err5
+
+
+
+
+describe("this test", () => {
+    it("will fail", () => {
+        expect(1).toBe(2)
+    })
+})
+
+
+
 
 
 

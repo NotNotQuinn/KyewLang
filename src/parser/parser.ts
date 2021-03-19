@@ -1,4 +1,4 @@
-import { Token, TType } from "../custom/tokens";
+import { Token, TokenType } from "../custom/tokens";
 import ParseResult from "./parse_result"
 import * as Nodes from "../custom/nodes";
 import { ParserState as s, ParserState} from "./parser_state";

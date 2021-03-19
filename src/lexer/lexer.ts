@@ -1,5 +1,5 @@
 import { LexerState as s, LexerState } from "./lexer_state";
-import { Token, TType } from "../custom/tokens";
+import { Token, TokenType } from "../custom/tokens";
 import * as Trace from "../custom/trace/stacktrace"; 
 
 // TODO move these keywords and operators to annother file?
@@ -31,7 +31,7 @@ export class Lexer {
     /** index of where the current token being processed started */
     public curTokenStart?: number;
     /** type of current token being processed */
-    public curTokenType?: TType;
+    public curTokenType?: TokenType;
     /** index of current character */
     public curPos: number;
 
@@ -105,7 +105,7 @@ export class Lexer {
                     case "\n":
                         this.state = s.CREATE_TOKEN;
                         this.curTokenStart = this.curPos;
-                        this.curTokenType = TType.NewlineToken;
+                        this.curTokenType = TokenType.NewlineToken;
                         this.buf += this.curChar;
                         this.curPos++;
                     break;
@@ -113,7 +113,7 @@ export class Lexer {
                     case ";":
                         this.state = s.CREATE_TOKEN;
                         this.curTokenStart = this.curPos;
-                        this.curTokenType = TType.PunctuationToken;
+                        this.curTokenType = TokenType.PunctuationToken;
                         this.buf += this.curChar;
                         this.curPos++;
                     break;
@@ -167,7 +167,7 @@ export class Lexer {
                 switch(this.curChar) {
 
                     default:
-                        this.curTokenType = TType.PunctuationToken;
+                        this.curTokenType = TokenType.PunctuationToken;
                         this.state = s.CREATE_TOKEN;
                 }
             break;
@@ -186,7 +186,7 @@ export class Lexer {
                         this.curPos++;
                     break;
                     default:
-                        this.curTokenType = TType.IntToken;
+                        this.curTokenType = TokenType.IntToken;
                         this.state = s.CREATE_TOKEN;
                 }
             break;
@@ -200,7 +200,7 @@ export class Lexer {
                         this.curPos++;
                     break;
                     default:
-                        this.curTokenType = TType.FloatToken;
+                        this.curTokenType = TokenType.FloatToken;
                         this.state = s.CREATE_TOKEN;
                 }
             break;
@@ -230,7 +230,7 @@ export class Lexer {
                         this.state = s.IDENTIFIER_OR_KEYWORD;
                     break;
                     default:
-                        this.curTokenType = TType.KeywordToken;
+                        this.curTokenType = TokenType.KeywordToken;
                         this.state = s.CREATE_TOKEN;
                 }
             break;
@@ -265,7 +265,7 @@ export class Lexer {
                     break;
 
                     default:
-                        this.curTokenType = TType.IdentifierToken;
+                        this.curTokenType = TokenType.IdentifierToken;
                         this.state = s.CREATE_TOKEN;
 
                 }
