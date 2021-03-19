@@ -5,23 +5,24 @@ import { SourceLine, SourcePoint, SourceText } from "./trace/stacktrace";
 /**
  * Token Types
  */
-export enum TType {
+export enum TokenType {
     // used
-    IntToken="IntToken",
-    FloatToken="FloatToken",
-    IdentifierToken="IdentifierToken",
-    KeywordToken="KeywordToken",
-    PunctuationToken="PunctuationToken",
+    IntToken                    =   "IntToken",
+    FloatToken                  =   "FloatToken",
+    IdentifierToken             =   "IdentifierToken",
+    KeywordToken                =   "KeywordToken",
+    PunctuationToken            =   "PunctuationToken",
+    EndOfFileToken              =   "EndOfFileToken",
 
     // unused - can be changed and have no effect
-    PlusToken="PlusToken",
-    MinusToken="MinusToken",
-    AsteriskToken="AsteriskToken",
-    ForwardSlashToken="ForwardSlashToken",
-    BackSlashToken="BackSlashToken",
-    LeftPerenthesisToken="LeftPerenthesisToken",
-    RightPerenthesisToken="RightPerenthesisToken",
-    NewlineToken="NewlineToken",
+    PlusToken                   =   "PlusToken",
+    MinusToken                  =   "MinusToken",
+    AsteriskToken               =   "AsteriskToken",
+    ForwardSlashToken           =   "ForwardSlashToken",
+    BackSlashToken              =   "BackSlashToken",
+    LeftPerenthesisToken        =   "LeftPerenthesisToken",
+    RightPerenthesisToken       =   "RightPerenthesisToken",
+    NewlineToken                =   "NewlineToken",
 
 }
 
@@ -29,7 +30,7 @@ export enum TType {
  * A lexical token.
  */
 export class Token {
-    type: TType;
+    type: TokenType;
     origin: SourceLine;
     value?: string;
 
@@ -40,40 +41,9 @@ export class Token {
      * @param obj.origin The original text from source that created this token
      * @param obj.value A string value of the token, unparsed
      */
-    constructor(obj: { type: TType; origin: SourceLine; value?: string }) {
+    constructor(obj: { type: TokenType; origin: SourceLine; value?: string }) {
         this.type = obj.type;
         this.origin = obj.origin;
         this.value = obj.value;
     }
 }
-
-
-// TODO put this somewhere else
-/*
-EXAMPLE HOW TO CREATE TOKEN:
-```js
-var token = new Token({
-    // TType =  TokenType
-    type: TType.IdentifierToken, 
-    origin: new SourceLine({
-        // This object is created when the token is created
-        // because it points to the specific place where 
-        // the token came from
-
-        start: new SourcePoint({
-            // This object is also created when the token is created
-            char_num:1,
-
-            // The SourceText object is the only thing that is created before the token is
-            source: new SourceText("lol, this is a cool text file!!\n", "lol.txt")
-        }), 
-        length: 3
-    }),
-
-    // optional for some token types because
-    // this is an identifier token the text 
-    // that the identifier IS is stored here.
-    value: "lol"
-})
-```
-*/
