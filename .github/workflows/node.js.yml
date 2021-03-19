@@ -5,9 +5,12 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ main, feautre/*, MUCH-NEEDED* ]
+    branches: 
+    - main
   pull_request:
-    branches: [ main, feautre/*, MUCH-NEEDED* ]
+    branches: 
+    - main 
+    - feautre/*
 
 jobs:
   build:
