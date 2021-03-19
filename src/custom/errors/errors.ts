@@ -2,7 +2,7 @@ import * as Trace from "../trace/stacktrace";
 
 export class BaseError {
     private _errorMessage?: string;
-        
+
     constructor(message?:string) {
         this.errorMessage = message
     }
@@ -63,7 +63,7 @@ export class TraceableError extends BaseError {
         out += (
             // this is the filename. 
             // TODO use paths not filenames.
-            (source.filename || "").cyan.bold + 
+            (source.filename || "").cyan.bold +
             // this adds ":line:col" to the filename, so you know where the error is. 
             `${":".grey}${point.line.toString().yellow}${":".grey}${point.collumn.toString().yellow}`
         ) + ` \n`  // end of the filename line.
@@ -71,9 +71,9 @@ export class TraceableError extends BaseError {
         // This gets the display string for the code that generated the error, and indents it all by 2
         out += this._line_segment?.getDisplayWithArrows(source,  this.errorMessage || "<no error message>", 2 ) + '\n';
         if(this.child)
-            // if there is a child error, get ITS display string, and add it. 
+            // if there is a child error, get ITS display string, and add it.
             out += this.child?.__getDisplayError(source, false);
-        
+
         // then add the padding to every line.
         var lines = out.split('\n')
         var new_lines: Array<string> = [];
@@ -82,7 +82,7 @@ export class TraceableError extends BaseError {
         }
         // rejoin the lines
         out = new_lines.join('\n')
-        
+
         // this is at the end to avoid padding
         // if we are the first error, display our error in bold and red at the top.
         if(first) out = `Error: ${this.errorMessage}\n`.red.bold + out;

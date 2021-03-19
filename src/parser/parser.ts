@@ -12,19 +12,16 @@ export class Parser {
     public get curToken(): SyntaxToken {
         return this.input_tokens[this.curPos]
     };
-    public curPos;
+    public curPos=0;
     constructor(tokens ?: Array<SyntaxToken>) {
         if (tokens !== undefined) 
             this.input_tokens = tokens;
-
-        this.curPos = 0;
-
     }
 
-    public parse() {
-        if(this.curToken == undefined) {
-            return new ParseResult(true)
+    public parse(node: Nodes.BaseNode = new Nodes.BaseNode) {
+        switch(this.curToken) {
+            case undefined:
+                this.state = s.DONE;
         }
-        
     }
 }
