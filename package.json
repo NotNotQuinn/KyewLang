@@ -6,6 +6,7 @@
   "repository": "https://github.com/NotNotQuinn/KyewLang/",
   "dependencies": {
     "colorts": "^0.1.63",
+    "jasmine": "^3.6.4",
     "prompt-sync": "^4.2.0",
     "prompt-sync-history": "^1.0.1"
   },
