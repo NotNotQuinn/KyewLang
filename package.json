@@ -10,7 +10,8 @@
     "typescript": "^4.1.5"
   },
   "scripts": {
-    "test": "jasmine --config=jasmine.json"
+    "test": "jasmine --config=jasmine.json",
+    "build": "tsc"
   },
   "author": "Quinn T",
   "license": "MIT",
