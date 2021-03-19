@@ -7,7 +7,7 @@ on:
   push:
     branches: [ main, feautre/*, MUCH-NEEDED* ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, feautre/*, MUCH-NEEDED* ]
 
 jobs:
   build:
