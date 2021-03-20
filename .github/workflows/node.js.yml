@@ -5,12 +5,16 @@ name: Node.js CI
 
 on:
   push:
+    paths:
+      - "src/**"
     branches: 
-    - main
+      - main
   pull_request:
+    paths:
+      - "src/**"
     branches: 
-    - main 
-    - feautre/*
+      - main 
+      - feautre/*
 
 jobs:
   build:
