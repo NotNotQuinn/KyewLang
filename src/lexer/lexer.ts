@@ -1,5 +1,6 @@
 import { LexerState as s, LexerState } from "./lexer_state";
-import { SyntaxToken, SyntaxKind } from "../custom/tokens";
+import { SyntaxToken } from "../custom/SyntaxToken";
+import { SyntaxType } from "../custom/SyntaxType";
 import * as Trace from "../custom/trace/stacktrace"; 
 
 // TODO move these keywords and operators to annother file?

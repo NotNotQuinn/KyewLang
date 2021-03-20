@@ -1,4 +1,5 @@
-import { SyntaxToken, SyntaxKind } from "../custom/tokens";
+import { SyntaxToken } from "../custom/SyntaxToken";
+import { SyntaxType } from "../custom/SyntaxType";
 import ParseResult from "./parse_result"
 import * as Nodes from "../custom/nodes";
 import { ParserState as s, ParserState} from "./parser_state";

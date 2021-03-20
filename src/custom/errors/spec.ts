@@ -1,6 +1,7 @@
 import * as e from "./errors";
 import { SourceLine, SourcePoint, SourceText } from "../trace/stacktrace";
-import { SyntaxToken, SyntaxKind } from "../tokens";
+import { SyntaxToken } from "../SyntaxToken";
+import { SyntaxType } from "../SyntaxType";
 
 var err = new e.TraceableError()
 var err2 = new e.TraceableError()
