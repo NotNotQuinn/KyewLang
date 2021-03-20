@@ -3,52 +3,78 @@ import { SyntaxType } from "../custom/SyntaxType";
 import * as Trace from "../custom/trace/stacktrace"; 
 
 export class Lexer {
-    /** source text being lexed */
-    public readonly source: string;
-    /** list of processed tokens */
-    public tokens: Array<SyntaxToken>;
+    public readonly text: string;
+    public get curChar():string {
+        if (this.curPos >= this.text.length)
+            return '\0';
+        return this.text[this.curPos];
+    }
 
-    /** Current character to process. */
-    public get curChar() {   return this.source[this.curPos];   }
-
-    /** index of where the current token being processed started */
-    public curTokenStart?: number;
-    /** type of current token being processed */
-    public curTokenType?: SyntaxKind;
-    /** index of current character */
     public curPos: number;
 
-    /**
-     * Lexes source into tokens
-     * @param source Text to lex
-     */
-    constructor(source: string) {
-        this.source = source;
-        this.tokens = [];
+    constructor(text: string) {
+        this.text = text;
         this.curPos = 0;
     }
 
-    /**
-     * Lexes until all tokens have been processed.
-     * @returns Current instance of lexer, so you can chain methods, 
-     *          e.g. 
-     *          * `lexer = new Lexer(source).lex_all()` 
-     *          * `tokens = lexer.lex_all().tokens`
-     */
-    public lex_all(): Lexer {
 
+    private Next() {
+        this.curPos++;
     }
 
-    /**
-     * Lexes until a token is created.
-     */
-    public lex_one_token(): SyntaxToken {
+    public getToken(): SyntaxToken {
+        // <numbers>
+        // + - * / ( )
+        // <whitespace>
 
-    }
+        if (this.curPos >= this.text.length)
+            return new SyntaxToken(SyntaxType.EndOfFileToken, this.curPos, "\0", null);
 
-    private reset_lexer() {
-        this.curTokenStart = undefined;  // nowhere
-        this.curTokenType = undefined;  // nothing
+        if(/\d/i.test(this.curChar))
+        {
+            let start = this.curPos;
+            while(/\d/i.test(this.curChar))
+                this.Next();
+
+            let length = this.curPos - start;
+            let text = this.text.substr(start, length);
+            let value: number|null = parseInt(text);
+            if(Number.isNaN(value)) {
+                value = null;
+                // TODO some error shit
+            }
+            return new SyntaxToken(SyntaxType.IntToken, start, text, value);
+        }
+
+        if(/[\t \n]/i.test(this.curChar))
+        {
+            let start = this.curPos;
+            while(/[\t \n]/i.test(this.curChar))
+                this.Next();
+
+            let length = this.curPos - start;
+            let text = this.text.substr(start, length);
+            let value = null;
+
+            return new SyntaxToken(SyntaxType.WhitespaceToken, start, text, value);
+        }
+
+        if (this.curChar == '(')
+            return new SyntaxToken(SyntaxType.OpenPerenthesisToken, this.curPos++, '(', null)
+        else if (this.curChar == ')')
+            return new SyntaxToken(SyntaxType.ClosePerenthesisToken, this.curPos++, ')', null)
+        else if (this.curChar == '+')
+            return new SyntaxToken(SyntaxType.PlusToken, this.curPos++, '+', null)
+        else if (this.curChar == '-')
+            return new SyntaxToken(SyntaxType.MinusToken, this.curPos++, '-', null)
+        else if (this.curChar == '*')
+            return new SyntaxToken(SyntaxType.AsteriskToken, this.curPos++, '*', null)
+        else if (this.curChar == '/')
+            return new SyntaxToken(SyntaxType.ForwardSlashToken, this.curPos++, '/', null)
+
+        let pos = this.curPos;
+        let text = this.curChar;
+        this.Next()
+        return new SyntaxToken(SyntaxType.BadToken, pos, text, null);
     }
 }
- 
