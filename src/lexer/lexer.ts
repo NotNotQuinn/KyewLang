@@ -1,4 +1,3 @@
-import { LexerState as s, LexerState } from "./lexer_state";
 import { SyntaxToken } from "../custom/SyntaxToken";
 import { SyntaxType } from "../custom/SyntaxType";
 import * as Trace from "../custom/trace/stacktrace"; 
