@@ -3,9 +3,9 @@ import { BaseError, TraceableError } from "./errors/errors";
 import { SourceLine, SourcePoint, SourceText } from "./trace/stacktrace";
 
 /**
- * Token Types
+ * Kinds of tokens or nodes
  */
-export enum TokenType {
+export enum SyntaxKind {
     // used
     IntToken                    =   "IntToken",
     FloatToken                  =   "FloatToken",
@@ -28,11 +28,11 @@ export enum TokenType {
 }
 
 /**
- * A lexical token.
+ * A token.
  */
-export class Token {
-    type: TokenType;
-    origin: SourceLine;
+export class SyntaxToken {
+    kind: SyntaxKind;
+    origin: number;
     value?: string;
 
     /**
@@ -42,8 +42,8 @@ export class Token {
      * @param obj.origin The original text from source that created this token
      * @param obj.value A string value of the token, unparsed
      */
-    constructor(obj: { type: TokenType; origin: SourceLine; value?: string }) {
-        this.type = obj.type;
+    constructor(obj: { kind: SyntaxKind; origin: number; length: number; value?: string }) {
+        this.kind = obj.kind;
         this.origin = obj.origin;
         this.value = obj.value;
     }
