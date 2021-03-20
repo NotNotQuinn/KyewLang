@@ -5,7 +5,7 @@ import { execute } from "./math-lang";
 
 let prompt = Prompt({ sigint: true, history: _Prompt_history() });
 while (true) {
-    let text = prompt("math > ")
+    let text = prompt("> ")
     let ahaha = execute(text);
     console.log(ahaha)
 }

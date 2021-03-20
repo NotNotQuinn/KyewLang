@@ -1,4 +1,5 @@
-import { Token, TokenType } from "../custom/tokens";
+import { SyntaxToken } from "../custom/SyntaxToken";
+import { SyntaxType } from "../custom/SyntaxType";
 import ParseResult from "./parse_result"
 import * as Nodes from "../custom/nodes";
 import { ParserState as s, ParserState} from "./parser_state";
@@ -7,12 +8,12 @@ import { ParserState as s, ParserState} from "./parser_state";
 
 export class Parser {
     public state: ParserState=s.DONE;
-    public input_tokens: Array<Token>=[];
-    public get curToken(): Token {
+    public input_tokens: Array<SyntaxToken>=[];
+    public get curToken(): SyntaxToken {
         return this.input_tokens[this.curPos]
     };
     public curPos;
-    constructor(tokens ?: Array<Token>) {
+    constructor(tokens ?: Array<SyntaxToken>) {
         if (tokens !== undefined) 
             this.input_tokens = tokens;
 
