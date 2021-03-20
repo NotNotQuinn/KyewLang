@@ -2,12 +2,6 @@ import { SyntaxToken } from "../custom/SyntaxToken";
 import { SyntaxType } from "../custom/SyntaxType";
 import * as Trace from "../custom/trace/stacktrace"; 
 
-// TODO move these keywords and operators to annother file?
-// this file could get crouded if we keep them here
-export const KEYWORDS : Array<string> = [
-    "if"
-]
-
 export class Lexer {
     /** source text being lexed */
     public readonly source: string;
