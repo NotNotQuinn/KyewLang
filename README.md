@@ -1,3 +1,5 @@
+main: [![Node.js CI](https://github.com/NotNotQuinn/KyewLang/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/NotNotQuinn/KyewLang/actions/workflows/node.js.yml)
+
 # KyewLang
 
 A simple language you can perform calculations in.
