@@ -3,14 +3,14 @@
   "version": "0.0.1",
   "description": "A simple math \"language\".",
   "main": "lib/interactive.js",
+  "repository": "https://github.com/NotNotQuinn/KyewLang/",
   "dependencies": {
     "colorts": "^0.1.63",
     "prompt-sync": "^4.2.0",
-    "prompt-sync-history": "^1.0.1",
-    "typescript": "^4.1.5"
+    "prompt-sync-history": "^1.0.1"
   },
   "scripts": {
-    "test": "jasmine --config=jasmine.json",
+    "test": "npx jasmine --config=jasmine.json",
     "build": "tsc"
   },
   "author": "Quinn T",
@@ -19,6 +19,7 @@
     "@types/jasmine": "^3.6.7",
     "@types/node": "^14.14.31",
     "@types/prompt-sync": "^4.1.0",
-    "@types/prompt-sync-history": "^1.0.1"
+    "@types/prompt-sync-history": "^1.0.1",
+    "typescript": "^4.2.3"
   }
 }

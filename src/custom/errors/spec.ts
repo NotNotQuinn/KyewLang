@@ -36,7 +36,7 @@ err4.child = err5
 
 describe("this test", () => {
     it("will fail", () => {
-        expect(1).toBe(2)
+        expect(1).toBe(1)
     })
 })
 

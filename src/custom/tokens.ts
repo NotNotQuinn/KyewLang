@@ -12,6 +12,7 @@ export enum TokenType {
     IdentifierToken             =   "IdentifierToken",
     KeywordToken                =   "KeywordToken",
     PunctuationToken            =   "PunctuationToken",
+    BadToken                    =   "BadToken",
     EndOfFileToken              =   "EndOfFileToken",
 
     // unused - can be changed and have no effect
@@ -20,8 +21,8 @@ export enum TokenType {
     AsteriskToken               =   "AsteriskToken",
     ForwardSlashToken           =   "ForwardSlashToken",
     BackSlashToken              =   "BackSlashToken",
-    LeftPerenthesisToken        =   "LeftPerenthesisToken",
-    RightPerenthesisToken       =   "RightPerenthesisToken",
+    OpenPerenthesisToken        =   "OpenPerenthesisToken",
+    ClosePerenthesisToken       =   "ClosePerenthesisToken",
     NewlineToken                =   "NewlineToken",
 
 }

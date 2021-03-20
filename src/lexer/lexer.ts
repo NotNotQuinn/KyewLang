@@ -83,6 +83,7 @@ export class Lexer {
                 switch(this.curChar) {
 
                     case undefined:
+                        // TODO EOF token
                         this.state = s.DONE;
                     break;
 
