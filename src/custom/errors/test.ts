@@ -32,20 +32,6 @@ err2.child = err3
 err3.child = err4
 err4.child = err5
 
-
-
-
-describe("this test", () => {
-    it("will fail", () => {
-        expect(1).toBe(1)
-    })
-})
-
-
-
-
-
-
 // TODO make the SourcePoint and SourceLine stuff store an ID of the source they are referencing
 // TODO and allow error objects to look up sources by id somehow
 var almost_empty=new SourceText('1\n2',"almost-empty.txt");
